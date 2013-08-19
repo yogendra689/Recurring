@@ -8,7 +8,6 @@ class Event < ActiveRecord::Base
   # serialize :schedule
 
   def schedule_it(rule= "Daily",start, revery, repeat_by, repeat_on, ends_on,occur,until_date)
-    debugger
     new_schedule = Schedule.new(start: start)
     if rule == "Daily"
       case ends_on
@@ -31,7 +30,6 @@ class Event < ActiveRecord::Base
       new_schedule.add_recurrence_rule(Rule.weekly(revery).day(weekdays).until(until_date.to_date))
       end
     elsif rule == "monthly"
-      debugger
       if repeat_by ==  "day_of_the_month"
         case ends_on
         when "never"

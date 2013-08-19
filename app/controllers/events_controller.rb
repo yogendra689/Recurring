@@ -10,7 +10,6 @@ class EventsController < ApplicationController
   def create
   	@event = Event.new(params[:event])
     @event.repeat_on = params[:repeat_on]
-    debugger
     @event.schedule = @event.schedule_it(@event.repeats, @event.startdate, @event.repeats_every.to_i,
                       @event.repeat_by, @event.repeat_on, @event.ends_on,@event.occur.to_i,@event.until_date)
     @event.save
