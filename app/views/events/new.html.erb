@@ -1,0 +1,42 @@
+
+<%= form_for(:event, url: {action: 'create'}) do |f| %>
+  <p> Description:</br><%= f.text_field :description %></p>
+  <p> Startdate:</br> <%= f.datetime_select :startdate %></p>
+  <p> Enddate:</br> <%= f.datetime_select :enddate %></p>
+  <p> Repeats:</br> <%= f.select(:repeats,['Daily','Every weekday(Monday to Friday)',
+  	'Every Monday,Wednesday, and Friday', 'Every Tuesday and Thursday',
+  	'weekly','monthly','yearly']) %>
+  	<div id="repeat_every">
+  	  Repeats every: <%= f.select :repeats_every, options_for_select(1..30) %>
+  	<div id="every">days</div>
+    </div>
+  	<div id="repeat_on">
+  	<p> Repeat on:
+      <%= check_box :repeat_on, 'sunday' %>S
+      <%= check_box :repeat_on, 'monday' %>M
+      <%= check_box :repeat_on, 'tuesday' %>T
+  	  <%= check_box :repeat_on, 'wednesday' %>W
+  	  <%= check_box :repeat_on, 'thursday' %>T
+  	  <%= check_box :repeat_on, 'friday' %>F
+  	  <%= check_box :repeat_on, 'saturday' %>S
+  	</p>
+  	</div>
+  	<div id="repeat_by">
+  		Repeat by:
+      <%= f.radio_button :repeat_by, "day_of_the_month" %> Day of the month
+      <%= f.radio_button :repeat_by, "day_of_the_week" %> Day of the week
+  	</div>
+  	<div id="starts_on">
+  	<p>	Starts on: <%= date_select(:startdate,:start_year => 1950) %></p>
+  	</div>
+  	<div id:"Ends">
+  	<p>Ends:<br> 
+  	<%= f.radio_button(:ends_on,"never")%>never<br>
+  	<%= f.radio_button(:ends_on, "after")%>after 
+        <%= f.text_field :occur, size: 1, disabled: true %>occurences<br>
+    <%= f.radio_button(:ends_on, "on")%>on
+        <%= f.text_field(:until_date, size: 2, disabled: true) %></p>
+   	</div>
+  	Summary:<div id="summary"></div>
+  <%= f.submit :create %>
+<% end %>
