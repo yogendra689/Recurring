@@ -27,7 +27,7 @@
       <%= f.radio_button :repeat_by, "day_of_the_week" %> Day of the week
   	</div>
   	<div id="starts_on">
-  	<p>	Starts on: <%= date_select(:startdate,:start_year => 1950) %></p>
+  	<p>	Starts on: <%= date_select(:startdate,:start_year => 2012) %></p>
   	</div>
   	<div id:"Ends">
   	<p>Ends:<br> 
@@ -37,6 +37,6 @@
     <%= f.radio_button(:ends_on, "on")%>on
         <%= f.text_field(:until_date, size: 2, disabled: true) %></p>
    	</div>
-  	Summary:<div id="summary"></div>
+  	Summary:<div id="summary">Daily</div>
   <%= f.submit :create %>
 <% end %>

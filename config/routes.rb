@@ -1,6 +1,9 @@
 Recurr::Application.routes.draw do
   
-  resources  :events
+  resources  :events do
+    get 'getval',:on => :collection
+    get 'weeklyrule',:on => :collection
+  end
   root to: "events#new"
   # The priority is based upon order of creation:
   # first created -> highest priority.
