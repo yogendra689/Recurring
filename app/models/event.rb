@@ -93,15 +93,9 @@ class Event < ActiveRecord::Base
 
   def schedule=(value)
   	write_attribute(:schedule, value.to_yaml)
-    # Schedule.from_hash(read_attribute(:schedule))
   end
 
   def schedule
-  	if read_attribute(:schedule)
-  		Schedule.from_yaml(read_attribute(:schedule))
-  	else
-  		nil
-  	end
-    # Schedule.from_hash(read_attribute(:schedule))
+  	read_attribute(:schedule) && Schedule.from_yaml(read_attribute(:schedule))
   end
 end

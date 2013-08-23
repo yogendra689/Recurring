@@ -47,9 +47,10 @@ class EventsController < ApplicationController
   end
 
   def weeklyrule
+    #debugger
+    aa = params[:selected].split("");
 
-    aa = params.keys[0].split("");
-    if params.keys[0] == "action"
+    if params[:selected].empty?
       @wr =Date.today.strftime("%A")+"s"
     else
       as= []
@@ -60,5 +61,9 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.json { render json: @wr.to_json }
     end
+  end
+
+
+  def getrule
   end
 end

@@ -113,7 +113,7 @@ $(document).ready(function(){
       opt = "Weekly on Tuesday, Thursday"
     if (opt == "yearly"){
       opt = "annually"
-      rval = rval
+      rval = rval;
     }  
     sumstring(opt,rval,"","");
   }
@@ -149,20 +149,21 @@ $(document).ready(function(){
       on = " on "+data;
       sumstring(opt,rval,every,on);
     }
-
   });
   }
 
   function weeklyfeature(){
     se = selectedweeks();
+    on =" on ";
     $.ajax({
     type: "GET",
     datatype: 'JSON',
     url: '/events/weeklyrule',
-    data: se,
-    success: function(data){
-       on =" on "+ data;
-       sumstring(opt,rval,every,on);
+    data: {selected: se, option: opt, rval: rval, every: every},
+    success: function(data){  
+       $("#summary").text(data);
+       // on =" on "+ data;
+       // sumstring(opt,rval,every,on);
     }
     });
     } 
