@@ -10,9 +10,7 @@ class EventsController < ApplicationController
 
   def create
   	@event = Event.new(params[:event])
-    @event.repeat_on = params[:repeat_on]
-    @event.schedule = @event.schedule_it(@event.repeats, @event.startdate, @event.repeats_every.to_i,
-                      @event.repeat_by, @event.repeat_on, @event.ends_on,@event.occur.to_i,@event.until_date)
+    @event.schedule = @event.schedule_it($rule,@event.startdate)
     @event.save
     redirect_to events_path
   end
@@ -24,46 +22,76 @@ class EventsController < ApplicationController
       format.json { render json: @events }
     end
   end
-  def show
-    
-  end
-  def getval
-    cnt = ((Date.today - Date.today.beginning_of_month).to_i/7)+1
-    case cnt
-      when 1
-        @str = "first " +  Date.today.strftime("%A")
-      when 2
-        @str = "second "+  Date.today.strftime("%A")  
-      when 3
-        @str = "third "+  Date.today.strftime("%A")  
-      when 4
-        @str = "fourth "+  Date.today.strftime("%A") 
-      when 5
-        @str = "fifth "+  Date.today.strftime("%A")  
+
+  def ruleoptions
+    rule = params[:option].to_i
+    selected = params[:selected]
+    revery = params[:rval].to_i    
+    occur = params[:count].to_i
+    until_date= params[:until]
+    ends_on = params[:ends_on]
+    repeat_by = params[:repeat_by]
+    start = "26/08/2013"
+    if rule == 0
+      case ends_on
+      when "never"
+      r = Rule.daily(revery)
+      when  "after"
+      r = Rule.daily(revery).count(occur)
+      when  "on"
+      r = Rule.daily(revery).until(until_date.to_date)
+      end
+    elsif [1,2,3,4].include? rule
+      weekdays = []
+      if selected.empty?
+        weekdays =[Date.today.wday]
+      else
+        days = selected.split("").each{|c| weekdays<<c.to_i}
+      end   
+      case ends_on
+      when "never"
+      r =Rule.weekly(revery).day(weekdays)
+      when  "after"
+      r =Rule.weekly(revery).day(weekdays).count(occur)
+      when  "on"
+      r =Rule.weekly(revery).day(weekdays).until(until_date.to_date)
+      end
+    elsif rule == 5
+      if repeat_by ==  "day_of_the_month"
+        case ends_on
+        when "never"
+        r =Rule.monthly(revery)
+        when  "after"
+        r =Rule.monthly(revery).count(occur)
+        when  "on"
+        r =Rule.monthly(revery).until(until_date.to_date)
+        end
+      elsif repeat_by == "day_of_the_week"
+        cnt = ((start.to_date.end_of_month - start.to_date).to_i/7)+1
+        if(cnt == 1) then cnt = -1  else cnt = ((start.to_date - start.to_date.beginning_of_month).to_i/7)+1 end
+        weekday = start.to_date.strftime("%A").downcase.to_sym
+        case ends_on
+        when "never"
+        r =Rule.monthly(revery).day_of_week( weekday => [cnt])
+        when  "after"
+        r =Rule.monthly(revery).day_of_week( weekday => [cnt]).count(occur)
+        when  "on"
+        r =Rule.monthly(revery).day_of_week( weekday => [cnt]).until(until_date.to_date)
+        end
+      end  
+    elsif rule == 6
+      case ends_on
+      when "never"
+      r =Rule.yearly(revery)
+      when  "after"
+      r =Rule.yearly(revery).count(occur)
+      when  "on"
+      r =Rule.yearly(revery).until(until_date.to_date)
+      end
     end
+    $rule = r
     respond_to do |format|
-      format.json { render json: @str.to_json }
+      format.json { render json: r.to_s.to_json }
     end
-  end
-
-  def weeklyrule
-    #debugger
-    aa = params[:selected].split("");
-
-    if params[:selected].empty?
-      @wr =Date.today.strftime("%A")+"s"
-    else
-      as= []
-      aa.each{|c| as<<c.to_i};
-      @wr = Rule.weekly.day(as).to_s
-      @wr.slice! "Weekly on"
-    end
-    respond_to do |format|
-      format.json { render json: @wr.to_json }
-    end
-  end
-
-
-  def getrule
   end
 end
